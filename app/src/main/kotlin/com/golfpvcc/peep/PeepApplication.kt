@@ -14,18 +14,18 @@ fun main(args: Array<String>) {
 	runApplication<PeepApplication>(*args)
 }
 
-@Component // test if the database can store a record
-class Vinnie (
-    private val repository: UserRepository
-) {
-    @PostConstruct
-    fun init(){
-        repository.save(
-            UserEntity(
-                email = "gmail.com",
-                username = "loft",
-                hashedPassword = "1234"
-            )
-        )
-    }
-}
+//@Component // test if the database can store a record
+//class Vinnie (
+//    private val repository: UserRepository
+//) {
+//    @PostConstruct
+//    fun init(){
+//        repository.save(
+//            UserEntity(
+//                email = "gmail.com",
+//                username = "loft",
+//                hashedPassword = "1234"
+//            )
+//        )
+//    }
+//}
