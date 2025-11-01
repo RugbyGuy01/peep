@@ -1,7 +1,10 @@
 package com.golfpvcc.peep.api.controllers
 
+import com.golfpvcc.peep.api.dto.AuthenticatedUserDto
+import com.golfpvcc.peep.api.dto.LoginRequest
 import com.golfpvcc.peep.api.dto.RegisterRequest
 import com.golfpvcc.peep.api.dto.UserDto
+import com.golfpvcc.peep.api.mappers.toAuthenticatedUserDto
 import com.golfpvcc.peep.api.mappers.toUserDto
 import com.golfpvcc.peep.service.auth.AuthService
 import jakarta.validation.Valid
@@ -23,5 +26,15 @@ class AuthController(private val authService: AuthService) {
             username = body.username,
             password = body.password
         ).toUserDto()
+    }
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody body: LoginRequest
+    ): AuthenticatedUserDto {
+        return authService.login(
+            email = body.email,
+            password = body.password
+        ).toAuthenticatedUserDto()
     }
 }
