@@ -2,6 +2,7 @@ package com.golfpvcc.peep.api.controllers
 
 import com.golfpvcc.peep.api.dto.AuthenticatedUserDto
 import com.golfpvcc.peep.api.dto.LoginRequest
+import com.golfpvcc.peep.api.dto.RefreshRequest
 import com.golfpvcc.peep.api.dto.RegisterRequest
 import com.golfpvcc.peep.api.dto.UserDto
 import com.golfpvcc.peep.api.mappers.toAuthenticatedUserDto
@@ -36,5 +37,14 @@ class AuthController(private val authService: AuthService) {
             email = body.email,
             password = body.password
         ).toAuthenticatedUserDto()
+    }
+
+    @PostMapping("/refresh")
+    fun refresh(
+        @RequestBody body: RefreshRequest
+    ): AuthenticatedUserDto {
+        return authService
+            .refresh(body.refreshToken)
+            .toAuthenticatedUserDto()
     }
 }
