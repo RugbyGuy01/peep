@@ -37,7 +37,10 @@ jpa:
 jwt:
   secret: ${JWT_SECRET_BASE64}
 
-
+peep:
+  email:
+    verification:
+      expiry-hours: 24
 
 
 

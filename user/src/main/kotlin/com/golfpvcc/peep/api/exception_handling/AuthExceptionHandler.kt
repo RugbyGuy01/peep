@@ -1,5 +1,6 @@
 package com.golfpvcc.peep.api.exception_handling
 
+import com.golfpvcc.peep.domain.exception.EmailNotVerifiedException
 import com.golfpvcc.peep.domain.exception.InvalidCredentialsException
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.exception.UserAlreadyExistsException
@@ -41,12 +42,22 @@ class AuthExceptionHandler {
         "message" to e.message
     )
 
+
     @ExceptionHandler(InvalidTokenException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onInvalidToken(
         e: InvalidTokenException
     ) = mapOf(
         "code" to "INVALID_TOKEN",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(EmailNotVerifiedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onEmailNotVerified(
+        e: EmailNotVerifiedException
+    ) = mapOf(
+        "code" to "EMAIL_NOT_VERIFIED",
         "message" to e.message
     )
 
