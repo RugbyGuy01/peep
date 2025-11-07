@@ -1,4 +1,4 @@
-package com.golfpvcc.peep.service.auth
+package com.golfpvcc.peep.service
 
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.model.UserId

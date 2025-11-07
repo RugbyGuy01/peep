@@ -3,6 +3,7 @@ package com.golfpvcc.peep.api.exception_handling
 import com.golfpvcc.peep.domain.exception.EmailNotVerifiedException
 import com.golfpvcc.peep.domain.exception.InvalidCredentialsException
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
+import com.golfpvcc.peep.domain.exception.SamePasswordException
 import com.golfpvcc.peep.domain.exception.UserAlreadyExistsException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -42,7 +43,6 @@ class AuthExceptionHandler {
         "message" to e.message
     )
 
-
     @ExceptionHandler(InvalidTokenException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onInvalidToken(
@@ -58,6 +58,15 @@ class AuthExceptionHandler {
         e: EmailNotVerifiedException
     ) = mapOf(
         "code" to "EMAIL_NOT_VERIFIED",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(SamePasswordException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun onSamePassword(
+        e: SamePasswordException
+    ) = mapOf(
+        "code" to "SAME_PASSWORD",
         "message" to e.message
     )
 

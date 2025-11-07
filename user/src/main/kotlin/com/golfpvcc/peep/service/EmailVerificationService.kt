@@ -1,4 +1,4 @@
-package com.golfpvcc.peep.service.auth
+package com.golfpvcc.peep.service
 
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.concurrent.TimeUnit
 
 
 @Service
@@ -28,20 +27,11 @@ class EmailVerificationService(
     fun createVerificationToken(email: String): EmailVerificationToken {
         val userEntity = userRepository.findByEmail(email)
             ?: throw UserNotFoundException()
-        val existingTokens = emailVerificationTokenRepository.findByUserAndUsedAtIsNull(
-            user = userEntity
-        )
 
-        val now = Instant.now()
-        val usedTokens = existingTokens.map {
-            it.apply {
-                this.usedAt = now
-            }
-        }
-        emailVerificationTokenRepository.saveAll(usedTokens)
+        emailVerificationTokenRepository.invalidateActiveTokensForUser(userEntity)
 
         val token = EmailVerificationTokenEntity(
-            expiresAt = now.plus(expiryHours, ChronoUnit.HOURS),
+            expiresAt = Instant.now().plus(expiryHours, ChronoUnit.HOURS),
             user = userEntity
         )
 

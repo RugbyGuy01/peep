@@ -1,14 +1,18 @@
 package com.golfpvcc.peep.api.controllers
 
 import com.golfpvcc.peep.api.dto.AuthenticatedUserDto
+import com.golfpvcc.peep.api.dto.ChangePasswordRequest
+import com.golfpvcc.peep.api.dto.EmailRequest
 import com.golfpvcc.peep.api.dto.LoginRequest
 import com.golfpvcc.peep.api.dto.RefreshRequest
 import com.golfpvcc.peep.api.dto.RegisterRequest
+import com.golfpvcc.peep.api.dto.ResetPasswordRequest
 import com.golfpvcc.peep.api.dto.UserDto
 import com.golfpvcc.peep.api.mappers.toAuthenticatedUserDto
 import com.golfpvcc.peep.api.mappers.toUserDto
-import com.golfpvcc.peep.service.auth.AuthService
-import com.golfpvcc.peep.service.auth.EmailVerificationService
+import com.golfpvcc.peep.service.AuthService
+import com.golfpvcc.peep.service.EmailVerificationService
+import com.golfpvcc.peep.service.PasswordResetService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,8 +24,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/auth")
-class AuthController(private val authService: AuthService,
-                     private val emailVerificationService: EmailVerificationService
+class AuthController(
+    private val authService: AuthService,
+    private val emailVerificationService: EmailVerificationService,
+    private val passwordResetService: PasswordResetService
 ) {
 
     @PostMapping("/register")
@@ -66,5 +72,29 @@ class AuthController(private val authService: AuthService,
         @RequestParam token: String
     ) {
         emailVerificationService.verifyEmail(token)
+    }
+
+    @PostMapping("/forgot-password")
+    fun forgotPassword(
+        @Valid @RequestBody body: EmailRequest
+    ) {
+        passwordResetService.requestPasswordReset(body.email)
+    }
+
+    @PostMapping("/reset-password")
+    fun resetPassword(
+        @Valid @RequestBody body: ResetPasswordRequest
+    ) {
+        passwordResetService.resetPassword(
+            token = body.token,
+            newPassword = body.newPassword
+        )
+    }
+
+    @PostMapping("/change-password")
+    fun changePassword(
+        @Valid @RequestBody body: ChangePasswordRequest
+    ) {
+        // TODO: Extract request user ID and call service
     }
 }
