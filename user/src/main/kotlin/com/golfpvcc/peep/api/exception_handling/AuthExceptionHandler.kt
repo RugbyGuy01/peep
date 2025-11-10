@@ -3,6 +3,7 @@ package com.golfpvcc.peep.api.exception_handling
 import com.golfpvcc.peep.domain.exception.EmailNotVerifiedException
 import com.golfpvcc.peep.domain.exception.InvalidCredentialsException
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
+import com.golfpvcc.peep.domain.exception.RateLimitException
 import com.golfpvcc.peep.domain.exception.SamePasswordException
 import com.golfpvcc.peep.domain.exception.UserAlreadyExistsException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
@@ -67,6 +68,15 @@ class AuthExceptionHandler {
         e: SamePasswordException
     ) = mapOf(
         "code" to "SAME_PASSWORD",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(RateLimitException::class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    fun onRateLimitExceeded(
+        e: RateLimitException
+    ) = mapOf(
+        "code" to "RATE_LIMIT_EXCEEDED",
         "message" to e.message
     )
 

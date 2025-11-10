@@ -4,6 +4,15 @@ spring:
     admin:
       enable: true
 
+  data:
+    redis:
+      host: "redis-14957.c14.us-east-1-2.ec2.redns.redis-cloud.com"
+      password: ${REDIS_PASSWORD}
+      username: "default"
+      port: 14957
+      connect-timeout: 5000ms
+      timeout: 2000ms
+
   datasource:
     url: jdbc:postgresql://db.sdciutkbdsykehigrsjb.supabase.co:5432/postgres
     username: postgres

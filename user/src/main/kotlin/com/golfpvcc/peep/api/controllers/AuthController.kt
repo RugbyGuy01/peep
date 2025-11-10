@@ -10,6 +10,7 @@ import com.golfpvcc.peep.api.dto.ResetPasswordRequest
 import com.golfpvcc.peep.api.dto.UserDto
 import com.golfpvcc.peep.api.mappers.toAuthenticatedUserDto
 import com.golfpvcc.peep.api.mappers.toUserDto
+import com.golfpvcc.peep.infra.rate_limiting.EmailRateLimiter
 import com.golfpvcc.peep.service.AuthService
 import com.golfpvcc.peep.service.EmailVerificationService
 import com.golfpvcc.peep.service.PasswordResetService
@@ -27,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
     private val emailVerificationService: EmailVerificationService,
-    private val passwordResetService: PasswordResetService
+    private val passwordResetService: PasswordResetService,
+    private val emailRateLimiter: EmailRateLimiter
 ) {
 
     @PostMapping("/register")
@@ -65,6 +67,17 @@ class AuthController(
         @RequestBody body: RefreshRequest
     ) {
         authService.logout(body.refreshToken)
+    }
+
+    @PostMapping("/resend-verification")
+    fun resendVerification(
+        @Valid @RequestBody body: EmailRequest
+    ) {
+        emailRateLimiter.withRateLimit(
+            email = body.email
+        ) {
+            emailVerificationService.resendVerificationEmail(body.email)
+        }
     }
 
     @GetMapping("/verify")
