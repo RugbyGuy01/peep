@@ -5,3 +5,11 @@ spring:
 
 jwt:
   expirationMinutes: 1000
+
+nginx:
+  require-proxy: false
+
+peep:
+  rate-limit:
+    ip:
+      apply-limit: false
