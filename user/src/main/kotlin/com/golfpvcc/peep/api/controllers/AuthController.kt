@@ -11,6 +11,7 @@ import com.golfpvcc.peep.api.dto.ResetPasswordRequest
 import com.golfpvcc.peep.api.dto.UserDto
 import com.golfpvcc.peep.api.mappers.toAuthenticatedUserDto
 import com.golfpvcc.peep.api.mappers.toUserDto
+import com.golfpvcc.peep.api.util.requestUserId
 import com.golfpvcc.peep.infra.rate_limiting.EmailRateLimiter
 import com.golfpvcc.peep.service.AuthService
 import com.golfpvcc.peep.service.EmailVerificationService
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.TimeUnit
-
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
@@ -134,6 +134,10 @@ class AuthController(
     fun changePassword(
         @Valid @RequestBody body: ChangePasswordRequest
     ) {
-        // TODO: Extract request user ID and call service
+        passwordResetService.changePassword(
+            userId = requestUserId,
+            oldPassword = body.oldPassword,
+            newPassword = body.newPassword
+        )
     }
 }

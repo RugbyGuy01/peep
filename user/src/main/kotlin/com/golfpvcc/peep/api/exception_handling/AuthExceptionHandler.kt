@@ -5,6 +5,7 @@ import com.golfpvcc.peep.domain.exception.InvalidCredentialsException
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.exception.RateLimitException
 import com.golfpvcc.peep.domain.exception.SamePasswordException
+import com.golfpvcc.peep.domain.exception.UnauthorizedException
 import com.golfpvcc.peep.domain.exception.UserAlreadyExistsException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -59,6 +60,15 @@ class AuthExceptionHandler {
         e: EmailNotVerifiedException
     ) = mapOf(
         "code" to "EMAIL_NOT_VERIFIED",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(UnauthorizedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onUnauthorized(
+        e: UnauthorizedException
+    ) = mapOf(
+        "code" to "UNAUTHORIZED",
         "message" to e.message
     )
 
