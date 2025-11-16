@@ -1,6 +1,7 @@
 package com.golfpvcc.peep.infra.database.repositories
 
-import com.golfpvcc.peep.domain.model.UserId
+
+import com.golfpvcc.peep.domain.type.UserId
 import com.golfpvcc.peep.infra.database.entities.UserEntity
 import org.springframework.data.jpa.repository.JpaRepository
 

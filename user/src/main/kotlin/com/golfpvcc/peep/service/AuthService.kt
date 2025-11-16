@@ -1,5 +1,6 @@
 package com.golfpvcc.peep.service
 
+import com.golfpvcc.peep.domain.events.user.UserEvent
 import com.golfpvcc.peep.domain.exception.EmailNotVerifiedException
 import com.golfpvcc.peep.domain.exception.InvalidCredentialsException
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
@@ -7,20 +8,20 @@ import com.golfpvcc.peep.domain.exception.UserAlreadyExistsException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
 import com.golfpvcc.peep.domain.model.AuthenticatedUser
 import com.golfpvcc.peep.domain.model.User
-import com.golfpvcc.peep.domain.model.UserId
+import com.golfpvcc.peep.domain.type.UserId
 import com.golfpvcc.peep.infra.database.entities.RefreshTokenEntity
 import com.golfpvcc.peep.infra.database.entities.UserEntity
 import com.golfpvcc.peep.infra.database.mappers.toUser
 import com.golfpvcc.peep.infra.database.repositories.RefreshTokenRepository
 import com.golfpvcc.peep.infra.database.repositories.UserRepository
+import com.golfpvcc.peep.infra.message_queue.EventPublisher
 import com.golfpvcc.peep.infra.security.PasswordEncoder
-import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.security.MessageDigest
 import java.time.Instant
 import java.util.Base64
-
 
 
 @Service
@@ -29,7 +30,8 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val emailVerificationService: EmailVerificationService
+    private val emailVerificationService: EmailVerificationService,
+    private val eventPublisher: EventPublisher
 ) {
 
     @Transactional
@@ -39,7 +41,7 @@ class AuthService(
             email = trimmedEmail,
             username = username.trim()
         )
-        if(user != null) {
+        if (user != null) {
             throw UserAlreadyExistsException()
         }
 
@@ -47,11 +49,21 @@ class AuthService(
             UserEntity(
                 email = trimmedEmail,
                 username = username.trim(),
-                hashedPassword = passwordEncoder.encode(password)
+                hashedPassword = passwordEncoder.encode(password)!!
             )
         ).toUser()
 
         val token = emailVerificationService.createVerificationToken(trimmedEmail)
+
+        eventPublisher.publish(
+            event = UserEvent.Created(
+                userId = savedUser.id,
+                email = savedUser.email,
+                username = savedUser.username,
+                verificationToken = token.token
+            )
+        )
+
 
         return savedUser
     }
@@ -63,11 +75,11 @@ class AuthService(
         val user = userRepository.findByEmail(email.trim())
             ?: throw InvalidCredentialsException()
 
-        if(!passwordEncoder.matches(password, user.hashedPassword)) {
+        if (!passwordEncoder.matches(password, user.hashedPassword)) {
             throw InvalidCredentialsException()
         }
 
-        if(!user.hasVerifiedEmail) {
+        if (!user.hasVerifiedEmail) {
             throw EmailNotVerifiedException()
         }
 
@@ -87,7 +99,7 @@ class AuthService(
 
     @Transactional
     fun refresh(refreshToken: String): AuthenticatedUser {
-        if(!jwtService.validateRefreshToken(refreshToken)) {
+        if (!jwtService.validateRefreshToken(refreshToken)) {
             throw InvalidTokenException(
                 message = "Invalid refresh token"
             )

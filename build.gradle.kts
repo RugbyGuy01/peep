@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.jpa) apply false
 }
 
-group = "com.plcoding"
+group = "com.golfpvcc"
 version = "0.0.1-SNAPSHOT"
 
 subprojects {

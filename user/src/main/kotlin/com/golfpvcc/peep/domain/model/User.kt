@@ -1,7 +1,8 @@
 package com.golfpvcc.peep.domain.model
-import java.util.UUID
 
-typealias UserId = UUID
+import com.golfpvcc.peep.domain.type.UserId
+
+
 
 data class User(
     val id: UserId,

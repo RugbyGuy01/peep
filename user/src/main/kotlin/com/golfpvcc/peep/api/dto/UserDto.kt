@@ -1,6 +1,6 @@
 package com.golfpvcc.peep.api.dto
 
-import com.golfpvcc.peep.domain.model.UserId
+import com.golfpvcc.peep.domain.type.UserId
 
 data class UserDto(
     val id: UserId,

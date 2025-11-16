@@ -1,10 +1,10 @@
 package com.golfpvcc.peep.service
 
+import com.golfpvcc.peep.domain.type.UserId
 import com.golfpvcc.peep.domain.exception.InvalidCredentialsException
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.exception.SamePasswordException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
-import com.golfpvcc.peep.domain.model.UserId
 import com.golfpvcc.peep.infra.database.entities.PasswordResetTokenEntity
 import com.golfpvcc.peep.infra.database.repositories.PasswordResetTokenRepository
 import com.golfpvcc.peep.infra.database.repositories.RefreshTokenRepository

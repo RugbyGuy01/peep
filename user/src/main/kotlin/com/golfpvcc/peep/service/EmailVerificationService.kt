@@ -1,5 +1,7 @@
 package com.golfpvcc.peep.service
 
+import com.golfpvcc.peep.domain.events.user.UserEvent
+import com.golfpvcc.peep.infra.message_queue.EventPublisher
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.exception.UserNotFoundException
 import com.golfpvcc.peep.domain.model.EmailVerificationToken
@@ -20,11 +22,25 @@ import java.time.temporal.ChronoUnit
 class EmailVerificationService(
     private val emailVerificationTokenRepository: EmailVerificationTokenRepository,
     private val userRepository: UserRepository,
-    @param:Value("\${peep.email.verification.expiry-hours}") private val expiryHours: Long
+    @param:Value("\${peep.email.verification.expiry-hours}") private val expiryHours: Long,
+    private val eventPublisher: EventPublisher
 ) {
-
+    @Transactional
     fun resendVerificationEmail(email: String) {
-        // TODO: Trigger resend
+        val token = createVerificationToken(email)
+
+        if(token.user.hasEmailVerified) {
+            return
+        }
+
+        eventPublisher.publish(
+            event = UserEvent.RequestResendVerification(
+                userId = token.user.id,
+                email = token.user.email,
+                username = token.user.username,
+                verificationToken = token.token
+            )
+        )
     }
 
     @Transactional

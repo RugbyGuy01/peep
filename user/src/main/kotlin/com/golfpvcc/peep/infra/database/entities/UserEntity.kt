@@ -1,6 +1,6 @@
 package com.golfpvcc.peep.infra.database.entities
 
-import com.golfpvcc.peep.domain.model.UserId
+import com.golfpvcc.peep.domain.type.UserId
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
