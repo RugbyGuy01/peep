@@ -3,6 +3,10 @@ spring:
     hibernate:
       ddl-auto: validate
 
+  mail:
+    host: smtp.mailgun.org
+    username: vinnie@sandbox93322efb7ef84e38a3482d94bd7a3d52.mailgun.org
+
 jwt:
   expirationMinutes: 15
 
@@ -10,6 +14,8 @@ nginx:
   require-proxy: true
 
 peep:
+  email:
+    url: "https://peep.golfpvcc.com"
   rate-limit:
     ip:
       apply-limit: true
