@@ -1,7 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import gradle.kotlin.dsl.accessors._6c35dc5b101437ffcd4f7834c90ef9dd.dependencyManagement
+import kotlin.collections.addAll
+// import gradle.kotlin.dsl.accessors._6c35dc5b101437ffcd4f7834c90ef9dd.dependencyManagement vpg 11/21/20255
 
 plugins {
     kotlin("jvm")
@@ -17,6 +18,7 @@ repositories {
 
 dependencyManagement {
     imports {
+//      mavenBom("org.springframework.boot:spring-boot-dependencies:${libraries.findVersion("spring-boot").get()}")
         mavenBom("org.springframework.boot:spring-boot-dependencies:${libraries.findVersion("spring-boot").get()}")
     }
 }

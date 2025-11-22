@@ -2,9 +2,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
   mail:
-    host: smtp.mailgun.org
-    username: vinnie@sandbox93322efb7ef84e38a3482d94bd7a3d52.mailgun.org
+    host: mail.golfpvcc.com
+    username: MagaMan@golfpvcc.com
 
 jwt:
   expirationMinutes: 1000

@@ -3,6 +3,10 @@ spring:
     name: peep
     admin:
       enable: true
+      logging:
+        level:
+          org:
+            springframework=DEBUG:
 
   data:
     redis:
@@ -45,7 +49,7 @@ spring:
 
   mail:
     port: 587
-    password: ${MAILGUN_PASSWORD}
+    password: jeff!9782Tucker
     properties:
       mail:
         smtp:

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{emails/layout :: layout(~{::content}, 'Verify your Chirp account')}">
+      th:replace="~{emails/layout :: layout(~{::content}, 'Verify your Peep account')}">
 <body>
 <div th:fragment="content" class="content-padding">
-    <h1>Welcome to Chirp, <span th:text="${username}">User</span>!</h1>
+    <h1>Welcome to Peep, <span th:text="${username}">User</span>!</h1>
 
-    <p>Thanks for creating an account with Chirp. We're excited to have you on board!</p>
+    <p>Thanks for creating an account with Peep. We're excited to have you on board!</p>
 
     <p>To get started, please verify your email address by clicking the button below:</p>
 
@@ -19,7 +19,7 @@
 
         <p style="margin-top: 20px;">This verification link will expire in <strong>24 hours</strong> for security reasons. If it expires, you can request a new one from your account settings.</p>
 
-        <p style="margin-top: 20px;">If you didn't create an account with Chirp, you can safely ignore this email.</p>
+        <p style="margin-top: 20px;">If you didn't create an account with Peep, you can safely ignore this email.</p>
     </div>
 </div>
 </body>

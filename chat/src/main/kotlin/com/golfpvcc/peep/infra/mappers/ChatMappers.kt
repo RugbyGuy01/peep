@@ -1,0 +1,38 @@
+package com.golfpvcc.peep.infra.mappers
+
+import com.golfpvcc.peep.domain.models.Chat
+import com.golfpvcc.peep.domain.models.ChatMessage
+import com.golfpvcc.peep.domain.models.ChatParticipant
+import com.golfpvcc.peep.infra.database.entities.ChatEntity
+import com.golfpvcc.peep.infra.database.entities.ChatParticipantEntity
+
+fun ChatEntity.toChat(lastMessage: ChatMessage? = null): Chat {
+    return Chat(
+        id = id!!,
+        participants = participants.map {
+            it.toChatParticipant()
+        }.toSet(),
+        creator = creator.toChatParticipant(),
+        lastActivityAt = lastMessage?.createdAt ?: createdAt,
+        createdAt = createdAt,
+        lastMessage = lastMessage
+    )
+}
+
+fun ChatParticipantEntity.toChatParticipant(): ChatParticipant {
+    return ChatParticipant(
+        userId = userId,
+        username = username,
+        email = email,
+        profilePictureUrl = profilePictureUrl
+    )
+}
+
+fun ChatParticipant.toChatParticipantEntity(): ChatParticipantEntity {
+    return ChatParticipantEntity(
+        userId = userId,
+        username = username,
+        email = email,
+        profilePictureUrl = profilePictureUrl
+    )
+}

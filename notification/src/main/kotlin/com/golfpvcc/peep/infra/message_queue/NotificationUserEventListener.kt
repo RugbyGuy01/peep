@@ -4,8 +4,8 @@ import com.golfpvcc.peep.domain.events.user.UserEvent
 import com.golfpvcc.peep.service.EmailService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
+
 
 @Component
 class NotificationUserEventListener(private val emailService: EmailService) {
@@ -34,7 +34,7 @@ class NotificationUserEventListener(private val emailService: EmailService) {
                     email = event.email,
                     username = event.username,
                     userId = event.userId,
-                    token =  event.passwordResetToken,
+                    token = event.passwordResetToken,
                     expiresIn = Duration.ofMinutes(event.expiresInMinutes)
                 )
             }

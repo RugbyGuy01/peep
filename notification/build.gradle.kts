@@ -26,6 +26,6 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(21)
-}
+// kotlin {     vpg 11/21/2025
+//    jvmToolchain(21)
+//}

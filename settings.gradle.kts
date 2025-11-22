@@ -1,6 +1,7 @@
 pluginManagement {
     includeBuild("build-logic")
     repositories {
+        maven { url = uri("https://repo.spring.io/milestone") }  // vpg 11/221/2025
         maven { url = uri("https://repo.spring.io/snapshot") }
         gradlePluginPortal()
     }

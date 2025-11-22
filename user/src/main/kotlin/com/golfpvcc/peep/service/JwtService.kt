@@ -11,7 +11,6 @@ import java.util.Date
 import java.util.UUID
 import kotlin.io.encoding.Base64
 
-
 @Service
 class JwtService(
     @param:Value("\${jwt.secret}") private val secretBase64: String,
