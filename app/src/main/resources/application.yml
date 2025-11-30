@@ -77,6 +77,10 @@ spring:
           max-interval: 10000ms
           max-attempts: 3
           multiplier: 2
+logging:
+  level:
+    org:
+      springframework=DEBUG:
 
 jwt:
   secret: ${JWT_SECRET_BASE64}

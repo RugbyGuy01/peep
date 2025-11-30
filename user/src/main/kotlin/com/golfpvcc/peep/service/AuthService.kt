@@ -23,7 +23,6 @@ import java.security.MessageDigest
 import java.time.Instant
 import java.util.Base64
 
-
 @Service
 class AuthService(
     private val userRepository: UserRepository,

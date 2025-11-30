@@ -3,12 +3,13 @@ spring:
     hibernate:
       ddl-auto: update
 
+
   mail:
     host: mail.golfpvcc.com
     username: MagaMan@golfpvcc.com
 
 jwt:
-  expirationMinutes: 1000
+  expiration-minutes: 1000
 
 nginx:
   require-proxy: false
@@ -19,3 +20,5 @@ peep:
   rate-limit:
     ip:
       apply-limit: false
+
+
