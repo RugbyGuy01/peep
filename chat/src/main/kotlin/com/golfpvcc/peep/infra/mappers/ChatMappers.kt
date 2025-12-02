@@ -4,6 +4,7 @@ import com.golfpvcc.peep.domain.models.Chat
 import com.golfpvcc.peep.domain.models.ChatMessage
 import com.golfpvcc.peep.domain.models.ChatParticipant
 import com.golfpvcc.peep.infra.database.entities.ChatEntity
+import com.golfpvcc.peep.infra.database.entities.ChatMessageEntity
 import com.golfpvcc.peep.infra.database.entities.ChatParticipantEntity
 
 fun ChatEntity.toChat(lastMessage: ChatMessage? = null): Chat {
@@ -34,5 +35,15 @@ fun ChatParticipant.toChatParticipantEntity(): ChatParticipantEntity {
         username = username,
         email = email,
         profilePictureUrl = profilePictureUrl
+    )
+}
+
+fun ChatMessageEntity.toChatMessage(): ChatMessage {
+    return ChatMessage(
+        id = id!!,
+        chatId = chatId,
+        sender = sender.toChatParticipant(),
+        content = content,
+        createdAt = createdAt
     )
 }
