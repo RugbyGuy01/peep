@@ -1,4 +1,4 @@
-package com.golfpvcc.peep.security
+package com.golfpvcc.peep.api.security
 
 import com.golfpvcc.peep.api.config.JwtAuthFilter
 import jakarta.servlet.DispatcherType

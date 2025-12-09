@@ -1,5 +1,9 @@
 package com.golfpvcc.peep.service
 
+import com.golfpvcc.peep.api.dto.ChatMessageDto
+import com.golfpvcc.peep.api.mappers.toChatMessageDto
+import com.golfpvcc.peep.domain.event.ChatParticipantLeftEvent
+import com.golfpvcc.peep.domain.event.ChatParticipantsJoinedEvent
 import com.golfpvcc.peep.domain.exception.ChatNotFoundException
 import com.golfpvcc.peep.domain.exception.ChatParticipantNotFoundException
 import com.golfpvcc.peep.domain.exception.ForbiddenException
@@ -14,16 +18,66 @@ import com.golfpvcc.peep.infra.database.repositories.ChatParticipantRepository
 import com.golfpvcc.peep.infra.database.repositories.ChatRepository
 import com.golfpvcc.peep.infra.mappers.toChat
 import com.golfpvcc.peep.infra.mappers.toChatMessage
+import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
+import java.time.Instant
 @Service
 class ChatService(
     private val chatRepository: ChatRepository,
     private val chatParticipantRepository: ChatParticipantRepository,
     private val chatMessageRepository: ChatMessageRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
+
+    @Cacheable(
+        value = ["messages"],
+        key = "#chatId",
+        condition = "#before == null && #pageSize <= 50",
+        sync = true
+    )
+    fun getChatMessages(
+        chatId: ChatId,
+        before: Instant?,
+        pageSize: Int
+    ): List<ChatMessageDto> {
+        return chatMessageRepository
+            .findByChatIdBefore(
+                chatId = chatId,
+                before = before ?: Instant.now(),
+                pageable = PageRequest.of(0, pageSize)
+            )
+            .content
+            .asReversed()
+            .map { it.toChatMessage().toChatMessageDto() }
+    }
+
+    fun getChatById(
+        chatId: ChatId,
+        requestUserId: UserId
+    ): Chat? {
+        return chatRepository
+            .findChatById(chatId, requestUserId)
+            ?.toChat(lastMessageForChat(chatId))
+    }
+
+    fun findChatsByUser(userId: UserId): List<Chat> {
+        val chatEntities = chatRepository.findAllByUserId(userId)
+        val chatIds = chatEntities.mapNotNull { it.id }
+        val latestMessages = chatMessageRepository
+            .findLatestMessagesByChatIds(chatIds.toSet())
+            .associateBy { it.chatId }
+
+        return chatEntities
+            .map {
+                it.toChat(lastMessage = latestMessages[it.id]?.toChatMessage())
+            }
+            .sortedByDescending { it.lastActivityAt }
+    }
 
     @Transactional
     fun createChat(
@@ -33,9 +87,11 @@ class ChatService(
         val otherParticipants = chatParticipantRepository.findByUserIdIn(
             userIds = otherUserIds
         )
+        val logger = LoggerFactory.getLogger(javaClass)
+        logger.info("createChat user $creatorId input otherUserIds $otherUserIds  found otherParticipants $otherParticipants")
 
         val allParticipants = (otherParticipants + creatorId)
-        if (allParticipants.size < 2) {
+        if(allParticipants.size < 2) {
             throw InvalidChatSizeException()
         }
 
@@ -49,6 +105,7 @@ class ChatService(
             )
         ).toChat(lastMessage = null)
     }
+
     @Transactional
     fun addParticipantsToChat(
         requestUserId: UserId,
@@ -77,6 +134,13 @@ class ChatService(
             }
         ).toChat(lastMessage)
 
+        applicationEventPublisher.publishEvent(
+            ChatParticipantsJoinedEvent(
+                chatId = chatId,
+                userIds = userIds
+            )
+        )
+
         return updatedChat
     }
 
@@ -91,7 +155,7 @@ class ChatService(
             ?: throw ChatParticipantNotFoundException(userId)
 
         val newParticipantsSize = chat.participants.size - 1
-        if (newParticipantsSize == 0) {
+        if(newParticipantsSize == 0) {
             chatRepository.deleteById(chatId)
             return
         }
@@ -100,6 +164,13 @@ class ChatService(
             chat.apply {
                 this.participants = chat.participants - participant
             }
+        )
+
+        applicationEventPublisher.publishEvent(
+            ChatParticipantLeftEvent(
+                chatId = chatId,
+                userId = userId
+            )
         )
     }
 

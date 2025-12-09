@@ -19,3 +19,5 @@ peep:
   rate-limit:
     ip:
       apply-limit: true
+  web-socket:
+    allowed-origin: "https://peep.golfpvcc.com"

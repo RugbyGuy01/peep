@@ -2,6 +2,7 @@ package com.golfpvcc.peep.service
 
 import com.golfpvcc.peep.domain.exception.InvalidTokenException
 import com.golfpvcc.peep.domain.type.UserId
+
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
