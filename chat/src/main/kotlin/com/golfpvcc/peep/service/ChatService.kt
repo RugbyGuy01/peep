@@ -16,8 +16,8 @@ import com.golfpvcc.peep.infra.database.entities.ChatEntity
 import com.golfpvcc.peep.infra.database.repositories.ChatMessageRepository
 import com.golfpvcc.peep.infra.database.repositories.ChatParticipantRepository
 import com.golfpvcc.peep.infra.database.repositories.ChatRepository
-import com.golfpvcc.peep.infra.mappers.toChat
-import com.golfpvcc.peep.infra.mappers.toChatMessage
+import com.golfpvcc.peep.infra.database.mappers.toChat
+import com.golfpvcc.peep.infra.database.mappers.toChatMessage
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher

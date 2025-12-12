@@ -1,4 +1,4 @@
-package com.golfpvcc.peep.infra.mappers
+package com.golfpvcc.peep.infra.database.mappers
 
 import com.golfpvcc.peep.domain.models.Chat
 import com.golfpvcc.peep.domain.models.ChatMessage

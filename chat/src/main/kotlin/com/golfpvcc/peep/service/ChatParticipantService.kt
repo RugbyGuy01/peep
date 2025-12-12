@@ -3,8 +3,8 @@ package com.golfpvcc.peep.service
 import com.golfpvcc.peep.domain.models.ChatParticipant
 import com.golfpvcc.peep.domain.type.UserId
 import com.golfpvcc.peep.infra.database.repositories.ChatParticipantRepository
-import com.golfpvcc.peep.infra.mappers.toChatParticipant
-import com.golfpvcc.peep.infra.mappers.toChatParticipantEntity
+import com.golfpvcc.peep.infra.database.mappers.toChatParticipant
+import com.golfpvcc.peep.infra.database.mappers.toChatParticipantEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 

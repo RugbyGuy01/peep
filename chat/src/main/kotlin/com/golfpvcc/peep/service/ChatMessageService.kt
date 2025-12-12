@@ -1,38 +1,28 @@
 package com.golfpvcc.peep.service
 
 
-import com.golfpvcc.peep.api.dto.ChatMessageDto
-import com.golfpvcc.peep.api.mappers.toChatMessageDto
-import com.golfpvcc.peep.domain.event.ChatParticipantLeftEvent
-import com.golfpvcc.peep.domain.event.ChatParticipantsJoinedEvent
 import com.golfpvcc.peep.domain.event.MessageDeletedEvent
 import com.golfpvcc.peep.domain.events.chat.ChatEvent
 import com.golfpvcc.peep.domain.exception.ChatNotFoundException
 import com.golfpvcc.peep.domain.exception.ChatParticipantNotFoundException
 import com.golfpvcc.peep.domain.exception.ForbiddenException
-import com.golfpvcc.peep.domain.exception.InvalidChatSizeException
 import com.golfpvcc.peep.domain.exception.MessageNotFoundException
-import com.golfpvcc.peep.domain.models.Chat
 import com.golfpvcc.peep.domain.models.ChatMessage
 import com.golfpvcc.peep.domain.type.ChatId
 import com.golfpvcc.peep.domain.type.ChatMessageId
 import com.golfpvcc.peep.domain.type.UserId
-import com.golfpvcc.peep.infra.database.entities.ChatEntity
 import com.golfpvcc.peep.infra.database.entities.ChatMessageEntity
 import com.golfpvcc.peep.infra.database.repositories.ChatMessageRepository
 import com.golfpvcc.peep.infra.database.repositories.ChatParticipantRepository
 import com.golfpvcc.peep.infra.database.repositories.ChatRepository
-import com.golfpvcc.peep.infra.mappers.toChat
-import com.golfpvcc.peep.infra.mappers.toChatMessage
+import com.golfpvcc.peep.infra.database.mappers.toChatMessage
 import com.golfpvcc.peep.infra.message_queue.EventPublisher
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Instant
+
 @Service
 class ChatMessageService(
     private val chatRepository: ChatRepository,
