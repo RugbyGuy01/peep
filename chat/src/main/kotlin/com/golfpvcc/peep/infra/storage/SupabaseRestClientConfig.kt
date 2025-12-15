@@ -13,10 +13,11 @@ class SupabaseRestClientConfig(
 
     @Bean
     fun supabaseRestClient(): RestClient {
-        return RestClient.builder()
+        val peepLink = RestClient.builder()
             .baseUrl(supabaseUrl)
             .defaultHeader("Authorization", "Bearer $supabaseServiceKey")
-            .defaultHeader("Content-Type", "application/json")
             .build()
+
+        return peepLink
     }
 }

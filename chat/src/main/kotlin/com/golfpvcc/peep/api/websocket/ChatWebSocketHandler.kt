@@ -34,7 +34,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-
 @Component
 class ChatWebSocketHandler(
     private val chatMessageService: ChatMessageService,
@@ -226,44 +225,44 @@ class ChatWebSocketHandler(
         logger.debug("Received pong from ${session.id}")
     }
 
-//    @Scheduled(fixedDelay = PING_INTERVAL_MS)
-//    fun pingClients() {
-//        val currentTime = System.currentTimeMillis()
-//        val sessionsToClose = mutableListOf<String>()
-//
-//        val sessionsSnapshot = connectionLock.read { sessions.toMap() }
-//
-//        sessionsSnapshot.forEach { (sessionId, userSession) ->
-//            try {
-//                if(userSession.session.isOpen) {
-//                    val lastPong = userSession.lastPongTimestamp
-//                    if(currentTime - lastPong > PONG_TIMEOUT_MS) {
-//                        logger.warn("Session $sessionId has timed out, closing connection.")
-//                        sessionsToClose.add(sessionId)
-//                        return@forEach
-//                    }
-//
-//                    userSession.session.sendMessage(PingMessage())
-//                    logger.debug("Sent ping to {}", userSession.userId)
-//                }
-//            } catch(e: Exception) {
-//                logger.error("Could not ping session $sessionId", e)
-//                sessionsToClose.add(sessionId)
-//            }
-//        }
-//
-//        sessionsToClose.forEach { sessionId ->
-//            connectionLock.read {
-//                sessions[sessionId]?.session?.let { session ->
-//                    try {
-//                        session.close(CloseStatus.GOING_AWAY.withReason("Ping timeout"))
-//                    } catch(e: Exception) {
-//                        logger.error("Couldn't close sessions for session ${session.id}")
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @Scheduled(fixedDelay = PING_INTERVAL_MS)
+    fun pingClients() {
+        val currentTime = System.currentTimeMillis()
+        val sessionsToClose = mutableListOf<String>()
+
+        val sessionsSnapshot = connectionLock.read { sessions.toMap() }
+
+        sessionsSnapshot.forEach { (sessionId, userSession) ->
+            try {
+                if(userSession.session.isOpen) {
+                    val lastPong = userSession.lastPongTimestamp
+                    if(currentTime - lastPong > PONG_TIMEOUT_MS) {
+                        logger.warn("Session $sessionId has timed out, closing connection.")
+                        sessionsToClose.add(sessionId)
+                        return@forEach
+                    }
+
+                    userSession.session.sendMessage(PingMessage())
+                    logger.debug("Sent ping to {}", userSession.userId)
+                }
+            } catch(e: Exception) {
+                logger.error("Could not ping session $sessionId", e)
+                sessionsToClose.add(sessionId)
+            }
+        }
+
+        sessionsToClose.forEach { sessionId ->
+            connectionLock.read {
+                sessions[sessionId]?.session?.let { session ->
+                    try {
+                        session.close(CloseStatus.GOING_AWAY.withReason("Ping timeout"))
+                    } catch(e: Exception) {
+                        logger.error("Couldn't close sessions for session ${session.id}")
+                    }
+                }
+            }
+        }
+    }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onLeftChat(event: ChatParticipantLeftEvent) {
