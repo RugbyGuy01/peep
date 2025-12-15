@@ -11,7 +11,6 @@ import java.time.Instant
 import java.util.UUID
 
 
-
 @Service
 class SupabaseStorageService(
     @param:Value("\${supabase.url}") private val supabaseUrl: String,
@@ -31,7 +30,7 @@ class SupabaseStorageService(
             ?: throw InvalidProfilePictureException("Invalid mime type $mimeType")
 
         val fileName = "user_${userId}_${UUID.randomUUID()}.$extension"
-        val path = "profile-pictures/$fileName"
+        val path = "Profile-Pictures/$fileName"
 
         val publicUrl = "$supabaseUrl/storage/v1/object/public/$path"
 
@@ -39,9 +38,7 @@ class SupabaseStorageService(
             path = path,
             expiresInSeconds = 300
         )
-
-
-        return ProfilePictureUploadCredentials(
+        val profilePictureUploadCredentials = ProfilePictureUploadCredentials(
             uploadUrl,
             publicUrl = publicUrl,
             headers = mapOf(
@@ -49,10 +46,11 @@ class SupabaseStorageService(
             ),
             expiresAt = Instant.now().plusSeconds(300)
         )
+        return profilePictureUploadCredentials
     }
 
     fun deleteFile(url: String) {
-        val path = if(url.contains("/object/public/")) {
+        val path = if (url.contains("/object/public/")) {
             url.substringAfter("/object/public/")
         } else throw StorageException("Invalid file URL format")
 
@@ -64,7 +62,7 @@ class SupabaseStorageService(
             .retrieve()
             .toBodilessEntity()
 
-        if(response.statusCode.isError) {
+        if (response.statusCode.isError) {
             throw StorageException("Unable to delete file: ${response.statusCode.value()}")
         }
     }

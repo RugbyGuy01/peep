@@ -7,7 +7,6 @@ import com.golfpvcc.peep.domain.models.Chat
 import com.golfpvcc.peep.domain.models.ChatMessage
 import com.golfpvcc.peep.domain.models.ChatParticipant
 
-
 fun Chat.toChatDto(): ChatDto {
     return ChatDto(
         id = id,

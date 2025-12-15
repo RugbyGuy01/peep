@@ -20,7 +20,7 @@ class ChatUserEventListener(
         logger.info("Received user event: {}", event)
         when(event) {
             is UserEvent.Verified -> {
-                 chatParticipantService.createChatParticipant(
+                chatParticipantService.createChatParticipant(
                     chatParticipant = ChatParticipant(
                         userId = event.userId,
                         username = event.username,

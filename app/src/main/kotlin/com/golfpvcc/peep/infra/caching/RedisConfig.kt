@@ -14,6 +14,7 @@ import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator
 import tools.jackson.module.kotlin.kotlinModule
 import java.time.Duration
 
+
 @Configuration
 @EnableCaching
 class RedisConfig {
