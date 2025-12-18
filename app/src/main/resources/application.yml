@@ -103,3 +103,6 @@ nginx:
 supabase:
   url: "https://sdciutkbdsykehigrsjb.supabase.co"
   service-key: ${SUPABASE_SERVICE_KEY}
+
+firebase:
+  credentials-path: "classpath:firebase-credentials/peep-firebase-adminsdk.json"

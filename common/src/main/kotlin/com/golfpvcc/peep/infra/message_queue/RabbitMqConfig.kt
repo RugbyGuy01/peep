@@ -18,7 +18,6 @@ import tools.jackson.databind.DefaultTyping
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator
 import tools.jackson.module.kotlin.kotlinModule
-
 @Configuration
 @EnableTransactionManagement
 class RabbitMqConfig {
@@ -77,6 +76,23 @@ class RabbitMqConfig {
         MessageQueues.NOTIFICATION_USER_EVENTS,
         true
     )
+
+    @Bean
+    fun notificationChatEventsQueue() = Queue(
+        MessageQueues.NOTIFICATION_CHAT_EVENTS,
+        true
+    )
+
+    @Bean
+    fun notificationChatEventsBinding(
+        notificationChatEventsQueue: Queue,
+        chatExchange: TopicExchange,
+    ): Binding {
+        return BindingBuilder
+            .bind(notificationChatEventsQueue)
+            .to(chatExchange)
+            .with(ChatEventConstants.CHAT_NEW_MESSAGE)
+    }
 
     @Bean
     fun notificationUserEventsBinding(
